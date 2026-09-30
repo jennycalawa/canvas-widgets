@@ -94,14 +94,25 @@
         .feedback-text {
             margin: 0;
         }
+
+        .error-message {
+            box-sizing: border-box;
+            margin: 12px;
+            padding: 12px;
+            border-left: 4px solid #b3261e;
+            background-color: #fff4f2;
+            color: #5f2120;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
     </style>
 </head>
 
 <body>
-    <div class="text-box-widget">
 
+    <div id="widget" class="text-box-widget">
         <label id="prompt-label" for="student-response">
-            Write your answer here:
+            Loading activity...
         </label>
 
         <textarea
@@ -111,9 +122,9 @@
         ></textarea>
 
         <button
+            id="submit-button"
             class="submit-button"
             type="button"
-            onclick="showFeedback()"
         >
             Submit
         </button>
@@ -127,39 +138,47 @@
             <p class="feedback-title">Feedback</p>
             <p id="feedback-text" class="feedback-text"></p>
         </div>
-
     </div>
+
+    <script src="activities.js"></script>
 
     <script>
         const params = new URLSearchParams(window.location.search);
+        const activityId = params.get("id");
 
-        const promptText =
-            params.get("prompt") ||
-            "Write your answer here:";
+        const widget = document.getElementById("widget");
+        const promptLabel = document.getElementById("prompt-label");
+        const responseBox = document.getElementById("student-response");
+        const submitButton = document.getElementById("submit-button");
+        const feedbackBox = document.getElementById("feedback");
+        const feedbackText = document.getElementById("feedback-text");
 
-        const feedbackText =
-            params.get("feedback") ||
-            "Compare your response with the material above.";
+        if (!activityId || !activities[activityId]) {
+            widget.innerHTML = `
+                <div class="error-message">
+                    This activity could not be loaded. Please check the activity ID.
+                </div>
+            `;
+        } else {
+            const activity = activities[activityId];
 
-        const placeholderText =
-            params.get("placeholder") ||
-            "Enter your response here...";
+            promptLabel.textContent = activity.prompt;
 
-        document.getElementById("prompt-label").textContent = promptText;
-        document.getElementById("feedback-text").textContent = feedbackText;
-        document.getElementById("student-response").placeholder = placeholderText;
+            responseBox.placeholder =
+                activity.placeholder || "Enter your response here...";
 
-        function showFeedback() {
-            const response = document.getElementById("student-response");
-            const feedback = document.getElementById("feedback");
+            feedbackText.textContent = activity.feedback;
 
-            if (response.value.trim() === "") {
-                response.focus();
-                return;
-            }
+            submitButton.addEventListener("click", function () {
+                if (responseBox.value.trim() === "") {
+                    responseBox.focus();
+                    return;
+                }
 
-            feedback.style.display = "block";
+                feedbackBox.style.display = "block";
+            });
         }
     </script>
+
 </body>
 </html>
