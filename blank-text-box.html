@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Reflection Activity</title>
+    <title>Response Box</title>
 
     <style>
         html,
@@ -13,36 +13,30 @@
             padding: 0;
             background-color: transparent;
             font-family: Arial, sans-serif;
-            color: #2d3b45;
         }
 
-        .text-box-widget {
+        .response-box {
             box-sizing: border-box;
             width: 100%;
-            padding: 12px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #0055a5;
-            font-size: 1rem;
-            font-weight: bold;
-            line-height: 1.4;
+            padding: 4px;
         }
 
         textarea {
             box-sizing: border-box;
             width: 100%;
-            min-height: 110px;
+            min-height: 120px;
             padding: 12px;
+
             border: 2px solid #b4dcff;
             border-radius: 6px;
+
             background-color: #fcfdff;
             color: #2d3b45;
+
             font-family: Arial, sans-serif;
             font-size: 1rem;
             line-height: 1.5;
+
             resize: vertical;
         }
 
@@ -50,135 +44,16 @@
             border-color: #0055a5;
             outline: 3px solid rgba(0, 85, 165, 0.18);
         }
-
-        .submit-button {
-            margin-top: 10px;
-            padding: 8px 18px;
-            border: none;
-            border-radius: 5px;
-            background-color: #0055a5;
-            color: white;
-            font-family: Arial, sans-serif;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .submit-button:hover {
-            background-color: #003f7d;
-        }
-
-        .submit-button:focus {
-            outline: 3px solid rgba(0, 85, 165, 0.25);
-        }
-
-        .feedback {
-            display: none;
-            box-sizing: border-box;
-            margin-top: 12px;
-            padding: 12px;
-            border-left: 4px solid #0055a5;
-            border-radius: 4px;
-            background-color: #f2f8fd;
-            color: #2d3b45;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .feedback-title {
-            margin: 0 0 5px 0;
-            color: #0055a5;
-            font-weight: bold;
-        }
-
-        .feedback-text {
-            margin: 0;
-        }
-
-        .error-message {
-            box-sizing: border-box;
-            margin: 12px;
-            padding: 12px;
-            border-left: 4px solid #b3261e;
-            background-color: #fff4f2;
-            color: #5f2120;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
     </style>
 </head>
 
 <body>
-
-    <div id="widget" class="text-box-widget">
-        <label id="prompt-label" for="student-response">
-            Loading activity...
-        </label>
-
+    <div class="response-box">
         <textarea
-            id="student-response"
-            placeholder="Enter your response here..."
+            aria-label="Student response"
+            placeholder="Write your response here..."
             spellcheck="true"
         ></textarea>
-
-        <button
-            id="submit-button"
-            class="submit-button"
-            type="button"
-        >
-            Submit
-        </button>
-
-        <div
-            id="feedback"
-            class="feedback"
-            role="status"
-            aria-live="polite"
-        >
-            <p class="feedback-title">Feedback</p>
-            <p id="feedback-text" class="feedback-text"></p>
-        </div>
     </div>
-
-    <script src="activities.js"></script>
-
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const activityId = params.get("id");
-
-        const widget = document.getElementById("widget");
-        const promptLabel = document.getElementById("prompt-label");
-        const responseBox = document.getElementById("student-response");
-        const submitButton = document.getElementById("submit-button");
-        const feedbackBox = document.getElementById("feedback");
-        const feedbackText = document.getElementById("feedback-text");
-
-        if (!activityId || !activities[activityId]) {
-            widget.innerHTML = `
-                <div class="error-message">
-                    This activity could not be loaded. Please check the activity ID.
-                </div>
-            `;
-        } else {
-            const activity = activities[activityId];
-
-            promptLabel.textContent = activity.prompt;
-
-            responseBox.placeholder =
-                activity.placeholder || "Enter your response here...";
-
-            feedbackText.textContent = activity.feedback;
-
-            submitButton.addEventListener("click", function () {
-                if (responseBox.value.trim() === "") {
-                    responseBox.focus();
-                    return;
-                }
-
-                feedbackBox.style.display = "block";
-            });
-        }
-    </script>
-
 </body>
 </html>
